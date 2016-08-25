@@ -1,6 +1,8 @@
 package com.rendecano.cashmoney.presentation.adapter;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +32,8 @@ public class CurrencyPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup collection, int position) {
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.view_rate_item, collection, false);
+        ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.view_rate_item, collection, false);
+        View layout = binding.getRoot();
 
         TextView txtCurrency = (TextView) layout.findViewById(R.id.txtCurrency);
         txtCurrency.setText(mRates.get(position).getCurrency());

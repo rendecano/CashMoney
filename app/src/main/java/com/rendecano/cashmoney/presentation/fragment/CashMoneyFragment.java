@@ -1,20 +1,23 @@
 package com.rendecano.cashmoney.presentation.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +27,7 @@ import com.rendecano.cashmoney.presentation.adapter.CurrencyPagerAdapter;
 import com.rendecano.cashmoney.presentation.presenter.CashMoneyPresenter;
 import com.rendecano.cashmoney.presentation.presenter.view.CashMoneyView;
 
-public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPager.OnPageChangeListener, TextWatcher {
+public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPager.OnPageChangeListener, TextWatcher, View.OnTouchListener {
 
     private View mView;
     private TextView mTxtBase;
@@ -35,18 +38,22 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
 
     private CashMoneyPresenter mPresenter;
     private String mCurrency;
+    private String mValue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mView = inflater.inflate(R.layout.fragment_cash_money, container, false);
+        // Binding for custom fonts
+        ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_cash_money, container, false);
+        mView = binding.getRoot();
 
         mTxtBase = (TextView) mView.findViewById(R.id.txtBase);
         mTxtRate = (TextView) mView.findViewById(R.id.txtRate);
         mEtConvert = (EditText) mView.findViewById(R.id.etConvert);
         mViewPager = (ViewPager) mView.findViewById(R.id.viewpager);
 
+        mView.setOnTouchListener(this);
         mEtConvert.addTextChangedListener(this);
 
         // Get display width to calculate the spacing between views
@@ -142,12 +149,26 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
     @Override
     public void afterTextChanged(Editable editable) {
         // No implementation
+
+
+
     }
 
     private void sendValue(String value) {
         mPresenter.convertCurrency(
                 Double.valueOf(TextUtils.isEmpty(value) ? "0" : value),
                 mCurrency);
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+        if  (view != mEtConvert) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
+        return false;
     }
 
     private static class FadePageTransformer implements ViewPager.PageTransformer {

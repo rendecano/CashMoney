@@ -2,14 +2,12 @@
 <resources>
     <color name="colorPrimary">#3ACF82</color>
     <color name="colorPrimaryDark">#3ACF82</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#FFFFFF</color>
 
     <color name="colorTextPrimary">#FFFFFF</color>
 
     <color name="colorViewPagerBackground">#3CC279</color>
     <color name="colorViewPagerLineBottom">#38BE75</color>
     <color name="colorViewPagerLineTop">#34A367</color>
-
-
 
 </resources>

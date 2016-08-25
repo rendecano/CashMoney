@@ -12,6 +12,10 @@ import com.rendecano.cashmoney.presentation.AndroidApplication;
 
 import org.json.JSONException;
 
+import java.text.DecimalFormat;
+import java.util.Currency;
+import java.util.Locale;
+
 /**
  * Created by Ren Decano.
  */
@@ -67,10 +71,28 @@ public class ConvertDataRepository implements ConvertRepository {
         // Get value from shared preferences
         double value = sharedPrefStorage.getConversion(symbol);
 
-        // TODO:
-        // Format to correct currency
-        String formattedValue = String.valueOf(value * pValue);
+        DecimalFormat formatter = new DecimalFormat("#,###,###.##");
+        String formattedValue = formatter.format(value * pValue);
 
-        subscriber.onNext(formattedValue);
+        Currency cu = Currency.getInstance(getLocale(symbol));
+        subscriber.onNext(cu.getSymbol() + formattedValue);
+    }
+
+    private Locale getLocale(String symbol) {
+        switch (symbol) {
+            case "CAD":
+                return Locale.CANADA;
+            case "EUR":
+                return Locale.GERMANY;
+            case "GBP":
+                return Locale.UK;
+            case "JPY":
+                return Locale.JAPAN;
+            case "USD":
+                return Locale.US;
+            default:
+                return Locale.getDefault();
+
+        }
     }
 }

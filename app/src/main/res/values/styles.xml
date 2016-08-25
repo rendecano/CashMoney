@@ -13,8 +13,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="CustomEditText" parent="android:Widget.EditText">
+        <item name="android:background">@drawable/bg_edittext_dash</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+    </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
+    <style name="CustomTextView" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+    </style>
 </resources>
