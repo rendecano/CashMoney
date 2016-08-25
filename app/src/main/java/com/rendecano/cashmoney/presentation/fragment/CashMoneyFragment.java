@@ -1,5 +1,6 @@
 package com.rendecano.cashmoney.presentation.fragment;
 
+import android.app.ProgressDialog;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -7,10 +8,13 @@ import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,9 +30,10 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
     private TextView mTxtBase;
     private TextView mTxtRate;
     private EditText mEtConvert;
-    private CashMoneyPresenter mPresenter;
     private ViewPager mViewPager;
+    private ProgressDialog mProgressBar;
 
+    private CashMoneyPresenter mPresenter;
     private String mCurrency;
 
     @Override
@@ -44,9 +49,16 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
 
         mEtConvert.addTextChangedListener(this);
 
+        // Get display width to calculate the spacing between views
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int width = displaymetrics.widthPixels;
+
         mViewPager.setClipToPadding(false);
-        mViewPager.setPadding(40, 0, 40, 0);
-        mViewPager.setPageMargin(20);
+        mViewPager.setPadding(width/3, 0, width/3, 0);
+        mViewPager.setPageMargin(0);
+        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setPageTransformer(false, new FadePageTransformer());
 
         mViewPager.setOnPageChangeListener(this);
 
@@ -90,17 +102,20 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
 
     @Override
     public void showLoading() {
-
+        mProgressBar = ProgressDialog.show(getActivity(), "",
+                "Fetching rates...", true);
     }
 
     @Override
     public void hideLoading() {
-
+        if (mProgressBar != null) {
+            mProgressBar.dismiss();
+        }
     }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        // No implementation
     }
 
     @Override
@@ -111,28 +126,38 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
+        // No implementation
     }
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+        // No implementation
     }
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        Toast.makeText(getActivity(), mCurrency, Toast.LENGTH_SHORT).show();
         sendValue(charSequence.toString());
     }
 
     @Override
     public void afterTextChanged(Editable editable) {
-
+        // No implementation
     }
 
     private void sendValue(String value) {
         mPresenter.convertCurrency(
                 Double.valueOf(TextUtils.isEmpty(value) ? "0" : value),
                 mCurrency);
+    }
+
+    private static class FadePageTransformer implements ViewPager.PageTransformer {
+        public void transformPage(View view, float position) {
+
+            if (position >= .01F && position <= 1.0F) {
+                view.setAlpha(1.0F);
+            } else {
+                view.setAlpha(0.5F);
+            }
+        }
     }
 }

@@ -67,6 +67,7 @@ public class ConvertDataRepository implements ConvertRepository {
         // Get value from shared preferences
         double value = sharedPrefStorage.getConversion(symbol);
 
+        // TODO:
         // Format to correct currency
         String formattedValue = String.valueOf(value * pValue);
 
