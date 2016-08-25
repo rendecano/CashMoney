@@ -29,6 +29,7 @@ import com.rendecano.cashmoney.presentation.presenter.view.CashMoneyView;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPager.OnPageChangeListener, TextWatcher, View.OnTouchListener {
 
@@ -167,7 +168,7 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
 
             if (!TextUtils.isEmpty(cleanString)) {
                 double parsed = Double.parseDouble(cleanString);
-                String formatted = NumberFormat.getCurrencyInstance().format((parsed / 100));
+                String formatted = NumberFormat.getCurrencyInstance(Locale.US).format((parsed / 100));
 
                 mCurrent = formatted;
                 mEtConvert.setText(formatted);
