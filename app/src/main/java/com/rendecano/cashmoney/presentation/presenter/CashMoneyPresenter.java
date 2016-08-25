@@ -33,7 +33,6 @@ public class CashMoneyPresenter implements Presenter<CashMoneyView> {
 
     @Override
     public void destroy() {
-        moneyView = null;
         useCase = null;
     }
 

@@ -56,7 +56,6 @@ public class CurrencyPagerAdapter extends PagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-
         return mRates.get(position).getCurrency();
     }
 }
