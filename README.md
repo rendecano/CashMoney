@@ -1,2 +1,2 @@
 # CashMoney
-Currench converter application.
+Currency converter application.
