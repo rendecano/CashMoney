@@ -2,7 +2,7 @@
 Currency converter application.
 
 # Screenshot
-![Alt text](/screensshot/screenshot.png?raw=true "Screenshot")
+![Alt text](/screenshot/screenshot.png?raw=true "Screenshot")
 
 # Architecture 
 Based on Clean Architecture 
