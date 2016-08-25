@@ -1,5 +1,7 @@
 package com.rendecano.cashmoney.data.repository;
 
+import android.text.TextUtils;
+
 import com.rendecano.cashmoney.data.entity.Base;
 import com.rendecano.cashmoney.data.entity.mapper.BaseEntityJsonMapper;
 import com.rendecano.cashmoney.data.local.SharedPrefStorage;
@@ -66,13 +68,14 @@ public class ConvertDataRepository implements ConvertRepository {
     }
 
     @Override
-    public void getConvertedCurrency(double pValue, String symbol, UseCaseSubscriber<String> subscriber) {
+    public void getConvertedCurrency(String pValue, String symbol, UseCaseSubscriber<String> subscriber) {
 
         // Get value from shared preferences
         double value = sharedPrefStorage.getConversion(symbol);
+        double inputValue = Double.valueOf(TextUtils.isEmpty(pValue.replace("$", "").replace(",", "")) ? "0" : pValue.replace("$", "").replace(",", ""));
 
         DecimalFormat formatter = new DecimalFormat("#,###,###.##");
-        String formattedValue = formatter.format(value * pValue);
+        String formattedValue = formatter.format(value * inputValue);
 
         Currency cu = Currency.getInstance(getLocale(symbol));
         subscriber.onNext(cu.getSymbol() + formattedValue);

@@ -21,7 +21,7 @@ public class ConvertUseCase {
         repository.initialValues(subscriber);
     }
 
-    public void convertCurrency(double pValue, String symbol, UseCaseSubscriber<String> subscriber) {
+    public void convertCurrency(String pValue, String symbol, UseCaseSubscriber<String> subscriber) {
         repository.getConvertedCurrency(pValue, symbol, subscriber);
     }
 

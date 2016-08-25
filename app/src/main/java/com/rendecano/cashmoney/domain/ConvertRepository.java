@@ -11,6 +11,6 @@ public interface ConvertRepository {
 
     void initialValues(UseCaseSubscriber<Base> subscriber);
 
-    void getConvertedCurrency(double pValue, String symbol, UseCaseSubscriber<String> subscriber);
+    void getConvertedCurrency(String pValue, String symbol, UseCaseSubscriber<String> subscriber);
 
 }

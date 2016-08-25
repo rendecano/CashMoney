@@ -27,6 +27,9 @@ import com.rendecano.cashmoney.presentation.adapter.CurrencyPagerAdapter;
 import com.rendecano.cashmoney.presentation.presenter.CashMoneyPresenter;
 import com.rendecano.cashmoney.presentation.presenter.view.CashMoneyView;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPager.OnPageChangeListener, TextWatcher, View.OnTouchListener {
 
     private View mView;
@@ -35,10 +38,11 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
     private EditText mEtConvert;
     private ViewPager mViewPager;
     private ProgressDialog mProgressBar;
+    private DecimalFormat mDecimalFormat;
 
     private CashMoneyPresenter mPresenter;
     private String mCurrency;
-    private String mValue;
+    private String mCurrent = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,7 +58,9 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
         mViewPager = (ViewPager) mView.findViewById(R.id.viewpager);
 
         mView.setOnTouchListener(this);
+
         mEtConvert.addTextChangedListener(this);
+        mEtConvert.setSelection(mEtConvert.getText().length());
 
         // Get display width to calculate the spacing between views
         DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -62,7 +68,7 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
         int width = displaymetrics.widthPixels;
 
         mViewPager.setClipToPadding(false);
-        mViewPager.setPadding(width/3, 0, width/3, 0);
+        mViewPager.setPadding(width / 3, 0, width / 3, 0);
         mViewPager.setPageMargin(0);
         mViewPager.setOffscreenPageLimit(4);
         mViewPager.setPageTransformer(false, new FadePageTransformer());
@@ -75,6 +81,8 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        mDecimalFormat = new DecimalFormat("#,###.##");
 
         mPresenter = new CashMoneyPresenter();
         mPresenter.attachView(this);
@@ -120,6 +128,10 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
         }
     }
 
+    private void sendValue(String value) {
+        mPresenter.convertCurrency(value, mCurrency);
+    }
+
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         // No implementation
@@ -143,28 +155,37 @@ public class CashMoneyFragment extends Fragment implements CashMoneyView, ViewPa
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        sendValue(charSequence.toString());
+        // No implementation
     }
 
     @Override
-    public void afterTextChanged(Editable editable) {
-        // No implementation
+    public void afterTextChanged(Editable s) {
+        if(!s.toString().equals(mCurrent)){
+            mEtConvert.removeTextChangedListener(this);
 
+            String cleanString = s.toString().replaceAll("[$,.]", "");
 
+            if (!TextUtils.isEmpty(cleanString)) {
+                double parsed = Double.parseDouble(cleanString);
+                String formatted = NumberFormat.getCurrencyInstance().format((parsed / 100));
 
+                mCurrent = formatted;
+                mEtConvert.setText(formatted);
+                mEtConvert.setSelection(formatted.length());
+                sendValue(formatted);
+            }
+
+            mEtConvert.addTextChangedListener(this);
+
+        }
     }
 
-    private void sendValue(String value) {
-        mPresenter.convertCurrency(
-                Double.valueOf(TextUtils.isEmpty(value) ? "0" : value),
-                mCurrency);
-    }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
-        if  (view != mEtConvert) {
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (view != mEtConvert) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 

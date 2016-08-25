@@ -22,7 +22,7 @@ public class CashMoneyPresenter implements Presenter<CashMoneyView> {
         useCase.getInitialValues(new GetDefaultValuesSubscriber());
     }
 
-    public void convertCurrency(double pValue, String pSymbol) {
+    public void convertCurrency(String pValue, String pSymbol) {
         useCase.convertCurrency(pValue, pSymbol, new ConvertSubscriber());
     }
 
